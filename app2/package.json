@@ -1,0 +1,25 @@
+{
+  "name": "thuctapnodejstechmaster",
+  "version": "1.0.0",
+  "description": "Khóa thực tập Nodejs tại Techmaster",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./server.js --exec babel-node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunlight3d/ThucTapNodejsTechmaster.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sunlight3d/ThucTapNodejsTechmaster/issues"
+  },
+  "homepage": "https://github.com/sunlight3d/ThucTapNodejsTechmaster#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "nodemon": "^1.17.5"
+  }
+}
