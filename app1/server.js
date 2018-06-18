@@ -12,10 +12,15 @@ nodemon --inspect ./server.js --exec babel-node
 */
 
 import http from 'http';
+
 let person = {
-	name: "Hoang",
-	email: "sunlight4d@gmail.com"
+	"name": "Hoang",
+	"email": "sunlight4d@gmail.com"
 };
+
+console.log(`person.name = ${person.name}`);
+console.log(`person.name = ${person["name"]}`);
+
 let inputArguments =  process.argv;
 console.log(`inputArguments = ${JSON.stringify(inputArguments)}`);
 
@@ -29,3 +34,19 @@ const server = http.createServer((req, res) => {
 
 server.listen(8080);
 */
+
+var x = 1;
+let y = 1;
+
+if (true) {
+	//Bên trong khối lệnh
+  	var x = 2;
+  	let y = 2;
+}
+console.log(`x = ${x}`);
+console.log(`y = ${y}`);
+
+const PI = 3.1416;
+
+
+
