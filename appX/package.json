@@ -1,24 +1,21 @@
 {
-  "name": "app4",
+  "name": "appx",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is a basic nodejs project",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./server.js --exec babel-node"
+    "start": "node ./server.js"
   },
-  "author": "",
+  "author": "Haong",
   "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3"
+  },
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1",
     "nodemon": "^1.17.5"
-  },
-  "dependencies": {
-    "body-parser": "^1.18.3",
-    "express": "^4.16.3",
-    "pg": "^7.4.3",
-    "pg-hstore": "^2.3.2",
-    "sequelize": "^4.38.0"
   }
 }

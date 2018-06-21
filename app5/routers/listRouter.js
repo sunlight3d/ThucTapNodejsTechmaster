@@ -24,8 +24,18 @@ curl  --request DELETE \
 */
 
 import { app } from '../app';
+import { sequelize } from '../sequelize';
 
 export const listRouter = app.route('/lists');
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });  
 
 listRouter.get((req, res) => {
   res.json({
