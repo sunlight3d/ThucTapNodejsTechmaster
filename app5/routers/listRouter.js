@@ -25,8 +25,6 @@ curl  --request DELETE \
 
 import { app } from '../app';
 import { sequelize } from '../sequelize';
-import { Task } from '../models/Task';
-import { List } from '../models/List';
 
 export const listRouter = app.route('/lists');
 
@@ -40,9 +38,18 @@ sequelize
     console.error('Unable to connect to the database:', err);
   });  
 
+import { Task } from '../models/Task';
+import { List } from '../models/List';
+
 listRouter.get((req, res) => {
   // req.query
-  List.findAll().then(lists => {
+  List.findAll({
+    attributes: ["id",
+                "name",
+                "priority",
+                "description",
+                "duedate"]
+  }).then(lists => {
         res.json({
           result: "success",
           data: lists,
