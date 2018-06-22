@@ -25,6 +25,7 @@ curl  --request DELETE \
 
 import { app } from '../app';
 import { sequelize } from '../sequelize';
+import { SUCCESS, FAILED } from '../constants';
 
 export const listRouter = app.route('/lists');
 
@@ -51,13 +52,48 @@ listRouter.get((req, res) => {
                 "duedate"]
   }).then(lists => {
         res.json({
-          result: "success",
+          result: SUCCESS,
           data: lists,
           description: `query List successfully`      
         });    
   }).catch(err => {
     res.json({
-        result: "failed",
+        result: FAILED,
+        data: "",
+        description: `Query List failed. Error = ${JSON.stringify(err)}`      
+    });    
+  });  
+});
+
+app.route('/listById').get((req, res) => {
+  // req.query
+  const { listId } = req.query.listId; 
+  List.findOne({
+    attributes: ["id",
+                "name",
+                "priority",
+                "description",
+                "duedate"],
+    where: {
+      id: req.query.listId
+    }
+  }).then(foundedList => {
+    if (foundedList) {
+      res.json({
+          result: SUCCESS,
+          data: foundedList,
+          description: `query List successfully with listId=${listId}`      
+        });    
+    } else {
+      res.json({
+          result: FAILED,
+          data: "",
+          description: `Cannot find list with listId=${listId}`
+        });    
+    }
+  }).catch(err => {
+    res.json({
+        result: FAILED,
         data: "",
         description: `Query List failed. Error = ${JSON.stringify(err)}`      
     });    
@@ -65,24 +101,59 @@ listRouter.get((req, res) => {
 });
 
 listRouter.post((req, res) => {
-   res.json({
-    result: "success",
-    method: "POST",
-    description: `You send ${JSON.stringify(req.body)}`      
-  });
+  const { name,priority,description,duedate } = req.body;
+  List.create({name,priority,description,duedate})
+    .then(newList => {
+      res.json({
+        result: SUCCESS,
+        data: newList,
+        description: `Create new List successfully`      
+      });
+    }).catch(err => {
+      res.json({
+        result: FAILED,
+        data: "",
+        description: `Create new failed`      
+      });
+    });  
 });
 
 listRouter.put((req, res) => {
+  const { listId } = req.body; 
+  List.findOne({    
+    where: {
+      id: listId
+    }
+  }).then(foundedList => {
+    foundedList.name = req.body.name?req.body.name:foundedList.name;
+    foundedList.priority = req.body.priority?req.body.priority:foundedList.priority;
+    foundedList.description = req.body.description?req.body.description:foundedList.description;
+    foundedList.duedate = req.body.duedate?req.body.duedate:foundedList.duedate;
+    foundedList.save().then(() => {
+      res.json({
+          result: SUCCESS,
+          data: foundedList,
+          description: `Update List successfully with listId=${listId}`      
+        });
+      }).catch(err => {
+        res.json({
+          result: FAILED,
+          data: "",
+          description: `Update List failed with listId=${listId}`      
+        });
+    });
+  }).catch(err => {
     res.json({
-    result: "success",
-    method: "PUT",
-    description: `You send ${JSON.stringify(req.body)}`      
-  });
+        result: FAILED,
+        data: "",
+        description: `Cannot update List failed with listId=${listId}`      
+      });
+  });  
 });
 
 listRouter.delete((req, res) => {
     res.json({
-    result: "success",
+    result: SUCCESS,
     method: "DELETE",
     description: `You send ${JSON.stringify(req.body)}`      
   });
