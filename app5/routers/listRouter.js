@@ -1,7 +1,7 @@
 /*
 send GET request:
 
-curl http://localhost:3000/list?nameContain='make'
+curl http://localhost:3000/lists?nameContain='make'
 
 send POST request:
 curl --header "Content-Type: application/json" \
@@ -25,9 +25,12 @@ curl  --request DELETE \
 
 import { app } from '../app';
 import { sequelize } from '../sequelize';
+import { Task } from '../models/Task';
+import { List } from '../models/List';
 
 export const listRouter = app.route('/lists');
 
+//Test DB connection
 sequelize
   .authenticate()
   .then(() => {
@@ -38,11 +41,20 @@ sequelize
   });  
 
 listRouter.get((req, res) => {
-  res.json({
-    result: "success",
-    method: "GET",
-    description: `You send ${JSON.stringify(req.query)}`      
-  });
+  // req.query
+  List.findAll().then(lists => {
+        res.json({
+          result: "success",
+          data: lists,
+          description: `query List successfully`      
+        });    
+  }).catch(err => {
+    res.json({
+        result: "failed",
+        data: "",
+        description: `Query List failed. Error = ${JSON.stringify(err)}`      
+    });    
+  });  
 });
 
 listRouter.post((req, res) => {

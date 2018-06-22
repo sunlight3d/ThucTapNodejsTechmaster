@@ -7,21 +7,24 @@ CREATE TABLE IF NOT EXISTS tblList (
     duedate   date NOT NULL    
 );
 */
+import { sequelize } from '../sequelize';
+import Sequelize from 'sequelize';
 
-const User = sequelize.define('user', {
+export const List = sequelize.define('tblList', {
   id: {
-    type: Sequelize.STRING
+    type: Sequelize.INTEGER,
+    primaryKey: true
   },
   name: {
     type: Sequelize.STRING
-  }
-});
-
-// force: true will drop the table if it already exists
-User.sync({force: true}).then(() => {
-  // Table created
-  return User.create({
-    firstName: 'John',
-    lastName: 'Hancock'
-  });
+  },
+  priority: {
+    type: Sequelize.TINYINT
+  },
+  description: {
+    type: Sequelize.TEXT
+  },
+  duedate: {
+    type: Sequelize.DATE
+  },
 });
