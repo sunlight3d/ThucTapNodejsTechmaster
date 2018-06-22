@@ -2,7 +2,7 @@
 npm install express --save
 npm install body-parser --save
 
-tblList
+lists
 tblTask
 1 List has many Tasks
 
