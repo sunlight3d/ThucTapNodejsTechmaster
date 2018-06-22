@@ -51,11 +51,11 @@ listRouter.get((req, res) => {
                 "description",
                 "duedate"]
   }).then(lists => {
-        res.json({
-          result: SUCCESS,
-          data: lists,
-          description: `query List successfully`      
-        });    
+      res.json({
+        result: SUCCESS,
+        data: lists,
+        description: `query List successfully`      
+      });    
   }).catch(err => {
     res.json({
         result: FAILED,
@@ -67,7 +67,7 @@ listRouter.get((req, res) => {
 
 app.route('/listById').get((req, res) => {
   // req.query
-  const { listId } = req.query.listId; 
+  const { listId } = req.query; 
   List.findOne({
     attributes: ["id",
                 "name",
@@ -75,7 +75,7 @@ app.route('/listById').get((req, res) => {
                 "description",
                 "duedate"],
     where: {
-      id: req.query.listId
+      id: listId
     }
   }).then(foundedList => {
     if (foundedList) {
@@ -101,8 +101,11 @@ app.route('/listById').get((req, res) => {
 });
 
 listRouter.post((req, res) => {
-  const { name,priority,description,duedate } = req.body;
-  List.create({name,priority,description,duedate})
+  const { name,priority,description,duedate } = req.body;  
+  List.create({name,
+    priority: parseInt(priority),
+    // priority: priority,
+    description,duedate}, {fields:["name","priority","description","duedate"]})
     .then(newList => {
       res.json({
         result: SUCCESS,
@@ -113,7 +116,7 @@ listRouter.post((req, res) => {
       res.json({
         result: FAILED,
         data: "",
-        description: `Create new failed`      
+        description: `Create new List failed. Error = ${err}`      
       });
     });  
 });
@@ -139,23 +142,29 @@ listRouter.put((req, res) => {
         res.json({
           result: FAILED,
           data: "",
-          description: `Update List failed with listId=${listId}`      
+          description: `Update List failed with listId=${listId}.Error = ${JSON.stringify(err)}`      
         });
     });
   }).catch(err => {
     res.json({
         result: FAILED,
         data: "",
-        description: `Cannot update List failed with listId=${listId}`      
+        description: `Cannot find list to update. ListId=${listId}.Error = ${JSON.stringify(err)}`
       });
   });  
 });
 
 listRouter.delete((req, res) => {
-    res.json({
-    result: SUCCESS,
-    method: "DELETE",
-    description: `You send ${JSON.stringify(req.body)}`      
+  const { listId } = req.body; 
+  List.destroy({
+    where: {
+      id: listId
+    }
   });
+  res.json({
+      result: SUCCESS,
+      data: foundedList,
+      description: `Delete List successfully with result=${result}`      
+  });        
 });
 

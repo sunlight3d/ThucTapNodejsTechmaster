@@ -26,5 +26,8 @@ export const List = sequelize.define('list', {
   },
   duedate: {
     type: Sequelize.DATE
-  },
+  }  
+}, {
+  // don't add the timestamp attributes (updatedAt, createdAt)
+  timestamps: false,
 });
