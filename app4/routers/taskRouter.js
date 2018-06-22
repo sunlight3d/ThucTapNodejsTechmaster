@@ -1,7 +1,8 @@
 /*
 send GET request:
 
-curl http://localhost:3000/task?nameContain='make'
+curl http://localhost:3000/tasks?nameContain='make'
+curl http://localhost:3000/tasks?name=Hoang&age=30
 
 curl http://localhost:3000/tasks/12345
 
@@ -39,7 +40,7 @@ taskByIdRouter.get((req, res) => {
   res.json({
     result: "success",
     method: "GET",
-    description: `You send ${JSON.stringify(req.query)}, taskId: ${JSON.stringify(req.params)}`
+    description: `You send1 ${JSON.stringify(req.query)}, taskId: ${JSON.stringify(req.query)}`
   });
 });
 
@@ -55,7 +56,7 @@ taskRouter.get((req, res) => {
   res.json({
     result: "success",
     method: "GET",
-    description: `You send ${JSON.stringify(req.query)}`      
+    description: `You send2 ${JSON.stringify(req.query)}`      
   });
 });
 

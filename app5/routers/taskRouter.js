@@ -39,7 +39,7 @@ taskByIdRouter.get((req, res) => {
   res.json({
     result: "success",
     method: "GET",
-    description: `You send ${JSON.stringify(req.query)}, taskId: ${JSON.stringify(req.params)}`
+    description: `You send ${JSON.stringify(req.params)}, taskId: ${JSON.stringify(req.params)}`
   });
 });
 
