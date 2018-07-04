@@ -11,6 +11,6 @@ export const sequelize = new Sequelize('postgres', 'postgres', '1234567', {
     idle: 10000
   }
 });
-
+export const Op = Sequelize.Op;
 // Or you can simply use a connection uri
 // export const sequelize = new Sequelize('postgres://postgres:123456@localhost:5432/postgres');

@@ -24,7 +24,7 @@ curl  --request DELETE \
 */
 
 import { app } from '../app';
-import { sequelize } from '../sequelize';
+import { sequelize, Op } from '../sequelize';
 import { SUCCESS, FAILED } from '../constants';
 
 export const listRouter = app.route('/lists');
@@ -77,11 +77,11 @@ app.route('/listById').get((req, res) => {
     where: {
       id: listId
     }
-  }).then(foundedList => {
-    if (foundedList) {
+  }).then(foundList => {
+    if (foundList) {
       res.json({
           result: SUCCESS,
-          data: foundedList,
+          data: foundList,
           description: `query List successfully with listId=${listId}`      
         });    
     } else {
@@ -89,6 +89,47 @@ app.route('/listById').get((req, res) => {
           result: FAILED,
           data: "",
           description: `Cannot find list with listId=${listId}`
+        });    
+    }
+  }).catch(err => {
+    res.json({
+        result: FAILED,
+        data: "",
+        description: `Query List failed. Error = ${JSON.stringify(err)}`      
+    });    
+  });  
+});
+
+//app.route('/lists/nameLike').get((req, res) => {
+app.route('/lists/:nameLike').get((req, res) => {
+  // req.query
+  const { nameLike } = req.params; 
+  console.log(`nameLike = ${nameLike}`);
+  // Project.findAll({ offset: 5, limit: 5 }); //skip first 5, get next 5
+  List.findAll({
+    attributes: ["id",
+                "name",
+                "priority",
+                "description",
+                "duedate"],
+    where: {
+      name: {
+        // [Op.like]: `%${nameLike}%`,
+        [Op.iLike]: `%${nameLike}%`
+      }
+    }
+  }).then(foundList => {
+    if (foundList) {
+      res.json({
+          result: SUCCESS,
+          data: foundList,
+          description: `query List successfully`      
+        });    
+    } else {
+      res.json({
+          result: FAILED,
+          data: "",
+          description: `Cannot find list with nameLike=${nameLike}`
         });    
     }
   }).catch(err => {
@@ -127,15 +168,15 @@ listRouter.put((req, res) => {
     where: {
       id: listId
     }
-  }).then(foundedList => {
-    foundedList.name = req.body.name?req.body.name:foundedList.name;
-    foundedList.priority = req.body.priority?req.body.priority:foundedList.priority;
-    foundedList.description = req.body.description?req.body.description:foundedList.description;
-    foundedList.duedate = req.body.duedate?req.body.duedate:foundedList.duedate;
-    foundedList.save().then(() => {
+  }).then(foundList => {
+    foundList.name = req.body.name?req.body.name:foundList.name;
+    foundList.priority = req.body.priority?req.body.priority:foundList.priority;
+    foundList.description = req.body.description?req.body.description:foundList.description;
+    foundList.duedate = req.body.duedate?req.body.duedate:foundList.duedate;
+    foundList.save().then(() => {
       res.json({
           result: SUCCESS,
-          data: foundedList,
+          data: foundList,
           description: `Update List successfully with listId=${listId}`      
         });
       }).catch(err => {
@@ -156,15 +197,39 @@ listRouter.put((req, res) => {
 
 listRouter.delete((req, res) => {
   const { listId } = req.body; 
-  List.destroy({
-    where: {
-      id: listId
-    }
-  });
-  res.json({
-      result: SUCCESS,
-      data: foundedList,
-      description: `Delete List successfully with result=${result}`      
-  });        
+  deleteListById(listId, res);
 });
 
+async function deleteListById(listId, res) {  
+  try {
+    await List.destroy({
+      where: {
+        id: listId
+      }
+    });
+    let foundList = await List.findOne({
+      where: {
+        id: listId
+      }
+    });
+    if (!foundList) {
+      res.json({
+        result: SUCCESS,
+        data: {},
+        description: `Delete List successfully with Id=${listId}`
+      });        
+    } else {
+      res.json({
+        result: FAILED,
+        data: {},
+        description: `Delete List failed with Id=${listId}`
+      });        
+    }
+  } catch(err){
+    res.json({
+      result: FAILED,
+      data: {},
+      description: `Delete List failed with Id=${listId}. Error = ${err}`
+    });
+  }  
+}
