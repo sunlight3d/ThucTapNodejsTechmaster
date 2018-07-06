@@ -26,6 +26,7 @@ curl  --request DELETE \
 import { app } from '../app';
 import { sequelize, Op } from '../sequelize';
 import { SUCCESS, FAILED } from '../constants';
+import { Validator } from 'node-input-validator';
 
 export const listRouter = app.route('/lists');
 
@@ -42,20 +43,7 @@ sequelize
 import { Task } from '../models/Task';
 import { List } from '../models/List';
 
-listRouter.get((req, res) => {
-  let v = new Validator({
-                    product: {id:'1',name:'',price:'', active:'yes'}
-                },
-                {
-                    'product': 'required|object',
-                    'product.id': 'required|integer',
-                    'product.name': 'required',
-                    'product.price': 'required|integer',
-                    'product.active': 'required|integer'
-                });
- 
-    let matched = await v.check();
-    
+listRouter.get((req, res) => {  
   // req.query
   List.findAll({
     attributes: ["id",
@@ -154,7 +142,20 @@ app.route('/lists/:nameLike').get((req, res) => {
   });  
 });
 
-listRouter.post((req, res) => {
+listRouter.post(async (req, res) => {
+  let v = new Validator({
+                    list: req.body
+                },
+                {
+                    'list': 'required|object',                    
+                    'list.name': 'required',
+                    'list.priority': 'required|integer',
+                    'list.description': 'required|integer'
+                    'list.duedate': 'required|integer'
+                });
+ 
+  let matched = await v.check();
+  
   const { name,priority,description,duedate } = req.body;    
   List.create({name,
     priority: parseInt(priority),
