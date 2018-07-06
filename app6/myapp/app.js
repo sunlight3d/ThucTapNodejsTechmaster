@@ -1,9 +1,15 @@
 /*
-npm install express-generator -g
-express --view=ejs myapp
-DEBUG=myapp:* npm start
 
 */
+npm install express-generator -g
+
+express --view=ejs myapp
+
+npm install babel-cli
+
+DEBUG=myapp:* npm start
+
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
